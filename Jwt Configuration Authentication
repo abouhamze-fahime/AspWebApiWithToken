@@ -14,31 +14,41 @@
   
    services.AddAuthentication(x =>
             {
+             ///define type of authentication 
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
+                // setting of jwt bearer token
                 var Key = Encoding.UTF8.GetBytes(Configuration["JWT:Key"]);
                 o.SaveToken = true;
                 o.RequireHttpsMetadata = false;
+                //Token is the key between client and server
                 o.TokenValidationParameters = new TokenValidationParameters()
                 {
+                  ///توکن سمت سرور اعتبار سنجی بشود ؟
                     ValidateIssuer = true,
+                    //اعتبار سنجی سمت کلاینت انجام بشود یا خیر ؟
                     ValidateAudience = true,
+                    // تاریخ انقضای توکن 
                     ValidateLifetime = true,
+                    // کلید توکن اعتبارسنجی بشود آیا؟
                     ValidateIssuerSigningKey = true,
+                    // سرور ولید کدام است؟
                     ValidIssuer = Configuration["JWT:Issuer"],
                     ValidAudience = Configuration["JWT:Audience"],
+                    // کلید رمز نگاری کدام است؟
                     IssuerSigningKey = new SymmetricSecurityKey(Key)
                 };
             });
             
-            
+            // تو میدلویر باید تعریف بشود  
+            // میخواهم از احراز هویت که بالا نوعش را از نوع جی دابلیو تی تعریف کردم استفاده کنم 
              app.UseAuthentication();
              
              
        #add token Controller 
-       public IConfiguration _configuration;
+        public IConfiguration _configuration;
         private readonly IUserService  _userService;
 
         public TokenController(IConfiguration config, IUserService context)
